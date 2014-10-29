@@ -1,0 +1,117 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="SaidIt" parent="Theme.AppCompat">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:buttonStyle">@style/Button</item>
+        <item name="android:textViewStyle">@style/TextView</item>
+        <item name="android:windowBackground">@color/gray_e</item>
+        <item name="android:windowActionBar">false</item>
+
+        <item name="android:alertDialogTheme">@style/SaidIt.AlertDialogTheme</item>
+        <item name="android:dialogTheme">@style/SaidIt.AlertDialogTheme</item>
+    </style>
+
+    <style name="SaidIt.AlertDialogTheme">
+
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:textViewStyle">@style/TextView</item>
+
+        <item name="android:windowTitleStyle">@style/SaidIt.DialogWindowTitle</item>
+        <!--<item name="android:windowTitleStyle">@android:style/DialogWindowTitle.Holo.Light</item>-->
+        <!--
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+        -->
+    </style>
+
+    <style name="SaidIt.DialogWindowTitle">
+        <item name="android:maxLines">1</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:textAppearance">@style/SaidIt.TextAppearance.DialogWindowTitle</item>
+    </style>
+
+    <style name="SaidIt.TextAppearance"></style>
+
+    <style name="SaidIt.TextAppearance.DialogWindowTitle">
+
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="Theme" parent="SaidIt">
+    </style>
+
+    <style name="ButtonBase" parent="android:Widget.Holo.Button">
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/emph_text_size</item>
+        <item name="android:background">@drawable/gray_button</item>
+        <item name="android:textColor">@color/gray_f</item>
+        <item name="android:paddingTop">@dimen/button_padding</item>
+        <item name="android:paddingBottom">@dimen/button_padding</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="Button" parent="ButtonBase">
+        <item name="android:shadowRadius">0.01</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowColor">@color/gray_6</item>
+    </style>
+
+    <style name="Ticket">
+        <item name="android:background">@drawable/ticket</item>
+        <item name="android:textColor">@color/gray_f</item>
+        <item name="android:textSize">@dimen/ticket_text_size</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowColor">@color/transparent</item>
+    </style>
+
+    <style name="CircleButton" parent="ButtonBase">
+        <item name="android:background">@drawable/circle_button</item>
+        <item name="android:layout_margin">20dp</item>
+    </style>
+
+    <style name="GreenButton" parent="ButtonBase">
+        <item name="android:background">@drawable/top_green_button</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:shadowRadius">0.01</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowColor">@color/dark_green</item>
+        <item name="android:textColor">@color/gray_f</item>
+    </style>
+
+    <style name="TextBase" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/gray_0</item>
+        <item name="android:textSize">@dimen/info_text_size</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TextView" parent="TextBase">
+    </style>
+
+    <style name="EmphasizedText" parent="TextView">
+        <item name="android:textSize">@dimen/emph_text_size</item>
+    </style>
+
+    <style name="SmallText">
+        <item name="android:textColor">@color/gray_8</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+</resources>

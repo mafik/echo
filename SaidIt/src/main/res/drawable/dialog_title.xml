@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:topLeftRadius="@dimen/large_round" android:topRightRadius="@dimen/large_round" android:bottomLeftRadius="0dp" android:bottomRightRadius="0dp" />
+            <solid android:color="@color/transparent" />
+            <stroke android:width="@dimen/shadow_offset" android:color="@color/dark_green" />
+        </shape>
+    </item>
+    <item android:bottom="@dimen/negative_shadow_offset">
+        <shape>
+            <padding android:bottom="10dp" android:top="10dp" android:left="@dimen/large_round" android:right="@dimen/large_round" />
+            <corners android:topLeftRadius="@dimen/small_round" android:topRightRadius="@dimen/small_round" android:bottomLeftRadius="0dp" android:bottomRightRadius="0dp" />
+            <solid android:color="@color/green" />
+        </shape>
+    </item>
+</layer-list>

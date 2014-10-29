@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recording_done_title"
+        android:id="@+id/payment_method_dialog_title"
+        android:layout_gravity="center_horizontal"
+        android:tag="titleBar"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:background="@drawable/dialog_title"
+        android:textColor="@color/gray_f" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/payment_method_dialog_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_content"
+            android:layout_gravity="center_horizontal">
+
+
+            <TextView
+                android:layout_marginTop="@dimen/small_round"
+                android:tag="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recording_done_filename" />
+
+            <TextView
+                android:id="@+id/recording_done_filename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/small_round"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:tag="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recording_done_directory" />
+
+                    <TextView
+                        android:id="@+id/recording_done_dirname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/recording_done_open_dir"
+                    android:background="@drawable/white_button"
+                    android:src="@drawable/ic_action_collection"
+                    android:textSize="@dimen/info_text_size"
+                    android:shadowColor="@color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:layout_gravity="center" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="@dimen/small_round"
+                android:tag="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recording_done_runtime" />
+
+            <TextView
+                android:id="@+id/recording_done_runtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <TextView
+                android:layout_marginTop="@dimen/small_round"
+                android:tag="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recording_done_size" />
+
+            <TextView
+                android:id="@+id/recording_done_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/small_round"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/recording_done_send"
+                    android:layout_marginRight="@dimen/small_round"
+                    android:background="@drawable/white_button"
+                    android:drawableStart="@drawable/ic_action_send_now"
+                    android:text="@string/send"
+                    android:textSize="@dimen/info_text_size"
+                    android:shadowColor="@color/transparent"
+                    android:textColor="@color/gray_8"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/recording_done_play"
+                    android:background="@drawable/white_button"
+                    android:drawableStart="@drawable/ic_action_play"
+                    android:text="@string/open"
+                    android:textSize="@dimen/info_text_size"
+                    android:shadowColor="@color/transparent"
+                    android:textColor="@color/gray_8"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

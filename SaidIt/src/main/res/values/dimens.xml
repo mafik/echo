@@ -1,0 +1,18 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">8dp</dimen>
+    <dimen name="activity_vertical_margin">8dp</dimen>
+    <dimen name="info_text_size">20sp</dimen>
+    <dimen name="ticket_text_size">18sp</dimen>
+    <dimen name="emph_text_size">30sp</dimen>
+    <dimen name="small_text_size">15dp</dimen>
+
+    <dimen name="button_text_size">25sp</dimen>
+    <dimen name="button_padding">8dp</dimen>
+    <dimen name="status_text_size">60sp</dimen>
+    <dimen name="large_round">30dp</dimen>
+    <dimen name="small_round">15dp</dimen>
+    <dimen name="shadow_offset">2dp</dimen>
+    <dimen name="negative_shadow_offset">2dp</dimen>
+
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme" parent="SaidIt">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">@bool/translucentNavBar</item>
+    </style>
+
+    <bool name="translucentNavBar">true</bool>
+</resources>

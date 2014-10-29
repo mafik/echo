@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Notifications -->
+
+    <string name="recording">Nagrywanie…</string>
+    <string name="recording_saved">Nagranie zapisane</string>
+    <string name="cant_create_file">Nie mogłem otworzyć pliku: </string>
+    <string name="error_during_writing_history_into">Błąd podczas zapisywania historii do: </string>
+    <string name="error_during_recording_into">Błąd podczas nagrywania do: </string>
+
+    <!-- Main screen -->
+
+    <string name="listening_enabled_disable">Echo włączone</string>
+    <string name="listening_disabled_enable">Echo wyłączone</string>
+
+    <string name="listening_description">Echo pozwala cofać się w czasie i nagrywać wydarzenia z przeszłości.</string>
+
+    <string name="recorded_static">Trwa nagrywanie. Zapisana została ostatnia</string>
+    <plurals name="recorded">
+        <item quantity="one">Trwa nagrywanie. Zapisana została ostatnia</item>
+        <item quantity="few">Trwa nagrywanie. Zapisane zostały ostatnie</item>
+        <item quantity="many">Trwa nagrywanie. Zapisane zostało ostatnie</item>
+    </plurals>
+    <string name="recording_stop_description">Czerwony przycisk poniżej pozwala zakończyć nagrywanie.</string>
+
+    <string name="history_size_title_static">Aktualnie pamiętane są ostatnie</string>
+    <plurals name="history_size_title">
+        <item quantity="one">Aktualnie pamiętana jest ostatnia</item>
+        <item quantity="few">Aktualnie pamiętane są ostatnie</item>
+        <item quantity="many">Aktualnie pamiętane jest ostatnie</item>
+    </plurals>
+
+    <plurals name="minute">
+        <item quantity="one">%d minuta</item>
+        <item quantity="few">%d minuty</item>
+        <item quantity="many">%d minut</item>
+    </plurals>
+
+    <string name="minute_second_join">" i "</string>
+
+    <plurals name="second">
+        <item quantity="one">%d sekunda</item>
+        <item quantity="few">%d sekundy</item>
+        <item quantity="many">%d sekund</item>
+    </plurals>
+
+    <string name="save_description">Aby zapisać zawartość pamięci do pliku, wybierz ile czasu chcesz zapisać:</string>
+
+    <string name="record_one_minute">1:00</string>
+    <string name="record_five_minutes">5:00</string>
+    <string name="record_all_memory">0:00</string>
+    <string name="default_price">9.90 zł</string>
+
+    <string name="record_description">Aby po zapisaniu pamięci dowolnym z powyższych przycisków, kontynuować nagrywanie, przytrzymaj go dłużej.</string>
+
+    <string name="upper_memory_limit_start">Górny limit pamięci to</string>
+    <string name="upper_memory_limit_settings_start">Możesz go zmienić modyfikując</string>
+    <string name="upper_memory_limit_settings_end">ustawienia.</string>
+
+    <string name="read_more_at">Jeśli chcesz dowiedzieć się więcej, przeczytaj pytania i odpowiedzi na</string>
+    <string name="rate_invite">Spodobało ci się Echo? Przekaż autorowi trochę ciepła wystawiając ocenę.</string>
+
+    <!-- Dialogs -->
+
+    <string name="work_default">Pracuję</string>
+    <string name="work_verifying_purchase">Weryfikuję zakup</string>
+    <string name="work_preparing_memory">Przygotowuję pamięć</string>
+    <string name="work_contacting_server">Odpytuję serwer</string>
+    <string name="work_claiming_coupon">Wykorzystuję kupon</string>
+
+    <string name="install_qr_dialog_title">Zainstaluj czytnik QR</string>
+
+    <string name="payment_method_dialog_title">Jak chcesz zapłacić?</string>
+
+    <string name="payment_failed_dialog_title">Płatność Nie Potwierdzona</string>
+    <string name="payment_failed_description">Nie mogę zweryfikować zakupu Echo na serwerze aplikacji. Co mam zrobić?</string>
+    <string name="payment_failed_description2">Aby zupełnie zrezygnować z płatności otwórz Ustawienia > Aplikacje > Echo i wyczyść dane aplikacji.</string>
+    <string name="payment_failed_dialog_confirm_manually">Potwierdź przez email</string>
+
+    <string name="payment_verification_failed_email_sent_title">Raport Wysłany</string>
+    <string name="payment_verification_failed_email_sent_description">Email z opisem twojego problemu został wysłany do autora. Wkrótce otrzymasz odpowiedź z licencją w postaci kodu QR.</string>
+
+    <string name="invalid_license_title">Nieprawidłowa Licencja</string>
+    <string name="invalid_license_description">Zeskanowana licencja nie pasuje do twojego urządzenia.</string>
+
+    <string name="invalid_qr_code_title">Nieprawidłowy kod QR</string>
+    <string name="invalid_qr_code_description">Ten kod nie jest ani licencją, ani kuponem na Echo.</string>
+
+    <string name="cant_connect_title">Serwer Nieosiągalny</string>
+    <string name="cant_connect_description">Nie udało mi się skontaktować z serwerem aplikacji. Upewnij się, że połączenie z internetem działa prawidłowo i spróbuj jeszcze raz. Jeśli wciąż występują problemy, spróbuj innej metody płatności.</string>
+
+    <string name="coupon_claimed">Kupon Zużyty</string>
+    <string name="try_another_qr_code">Spróbuj innego</string>
+
+    <string name="recording_done_title">Nagranie Gotowe</string>
+    <string name="recording_done_filename">Nazwa pliku:</string>
+    <string name="recording_done_directory">Katalog:</string>
+    <string name="recording_done_runtime">Czas trwania:</string>
+    <string name="recording_done_size">Rozmiar:</string>
+
+    <string name="press_back_to_cancel">Aby anulować, wciśnij "wstecz"</string>
+    <string name="send">Wyślij</string>
+    <string name="open">Otwórz</string>
+    <string name="retry">Spróbuj ponownie</string>
+
+    <!-- Settings  -->
+
+    <string name="audio_memory_holds">Pojemność pamięci dźwięku to</string>
+    <string name="audio_memory_change">Możesz ją zmienić modyfikując:</string>
+    <string name="option_a_used_ram">A) Wykorzystywaną pamięć RAM</string>
+    <string name="option_b_audio_quality">B) Jakość dźwięku</string>
+    <string name="used_ram_description">Echo oraz inne aplikacje wykorzystują pomięć telefonu do zapisywania swoich danych. Duże wykorzystanie pamięci może spowolnić pozostałe aplikacje.</string>
+    <string name="audio_quality_description">Jakość 8kHz wystarcza do zapisu ludzkiej mowy. Wyższe opcje pozwalają na znalezienie kompromisu między jakością nagrania, a zużyciem pamięci.</string>
+    <string name="settings_return">Powrót</string>
+
+    <!-- Others -->
+
+    <string name="sample_time">22 minuty i 30 sekund.</string> <!-- must end sentence -->
+
+</resources>

@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.11.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
+
+    signingConfigs {
+        release {
+            storeFile file("<relative path>")
+            storePassword "<fill in>"
+            keyAlias "<fill in>"
+            keyPassword "<fill in>"
+        }
+    }
+
+    buildTypes {
+        release {
+            runProguard true
+            proguardFile file('proguard.cfg')
+            proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:support-v4:19.+'
+}

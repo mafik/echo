@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name" translatable="false">Echo</string>
+
+    <!-- Notifications -->
+
+    <string name="recording">Recording…</string>
+    <string name="recording_saved">Recording saved</string>
+    <string name="cant_create_file">Couldn\'t create output file: </string>
+    <string name="error_during_writing_history_into">Error during writing audio history into: </string>
+    <string name="error_during_recording_into">Error during recording into: </string>
+
+    <!-- Main screen -->
+
+    <string name="listening_enabled_disable">Echo enabled</string>
+    <string name="listening_disabled_enable">Echo disabled</string>
+
+    <string name="listening_description">Echo lets you go back in time and record events from the past.</string>
+
+    <string name="recorded_static">Recording is in progress. Already saved the most recent</string>
+    <plurals name="recorded">
+        <item quantity="other">Recording is in progress. Already saved the most recent</item>
+    </plurals>
+    <string name="recording_stop_description">Red button below will stop the recording.</string>
+
+    <string name="history_size_title_static">Memory holds the most recent</string>
+    <plurals name="history_size_title">
+        <item quantity="other">Memory holds the most recent</item>
+    </plurals>
+
+    <plurals name="minute">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+
+    <string name="minute_second_join">" and "</string>
+
+    <plurals name="second">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+
+    <string name="save_description">To save contents of memory to a file, choose how much time would you like to save:</string>
+
+    <string name="record_one_minute">1:00</string>
+    <string name="record_five_minutes">5:00</string>
+    <string name="record_all_memory">0:00</string>
+    <string name="default_price">$ 3.90</string>
+
+    <string name="record_description">To keep recording after saving memory with one of the buttons above, hold it longer.</string>
+
+    <string name="upper_memory_limit_start">Memory is limited at</string>
+    <string name="upper_memory_limit_settings_start">You can change it by altering</string>
+    <string name="upper_memory_limit_settings_end">settings.</string>
+
+    <string name="read_more_at">If you want to know more read Frequently Asked Questions at</string>
+    <string name="rate_invite">Did you liked Echo? Show your feelings by rating it on Google Play.</string>
+
+    <!-- Dialogs -->
+
+    <string name="work_default">Working</string>
+    <string name="work_verifying_purchase">Verifying purchase</string>
+    <string name="work_preparing_memory">Preparing memory</string>
+    <string name="work_contacting_server">Contacting server</string>
+    <string name="work_claiming_coupon">Claiming coupon</string>
+
+    <string name="install_qr_dialog_title">Install QR reader</string>
+
+    <string name="payment_method_dialog_title">How can you pay?</string>
+
+    <string name="payment_failed_dialog_title">Payment Not Confirmed</string>
+    <string name="payment_failed_description">You have purchased Echo but I can\'t verify payment online. How should I proceed?</string>
+    <string name="payment_failed_description2">To give up payment verification, open Settings > Applications > Echo and clear its data.</string>
+    <string name="payment_failed_dialog_confirm_manually">Confirm by email</string>
+
+    <string name="payment_verification_failed_email_sent_title">Issue report sent</string>
+    <string name="payment_verification_failed_email_sent_description">Email with your error was sent to the developer. Soon you should receive an answer with a QR-coded license.</string>
+
+    <string name="invalid_license_title">Invalid License</string>
+    <string name="invalid_license_description">Scanned license doesn\'t match to your device.</string>
+
+    <string name="invalid_qr_code_title">Invalid QR code</string>
+    <string name="invalid_qr_code_description">This QR code wasn\'t made for Echo.</string>
+
+    <string name="cant_connect_title">Couldn\'t Contact Server</string>
+    <string name="cant_connect_description">There was an error while contacting application\'s server. Ensure that internet connection is working and try again. If it still doesn\'t work, try different payment method.</string>
+
+    <string name="coupon_claimed">Coupon Already Claimed</string>
+    <string name="try_another_qr_code">Try another</string>
+
+    <string name="recording_done_title">Recording ready</string>
+    <string name="recording_done_filename">File name:</string>
+    <string name="recording_done_directory">Directory:</string>
+    <string name="recording_done_runtime">Length:</string>
+    <string name="recording_done_size">Size:</string>
+
+    <string name="press_back_to_cancel">Press "back" to cancel</string>
+    <string name="send">Send</string>
+    <string name="open">Open</string>
+    <string name="retry">Retry</string>
+
+    <!-- Settings  -->
+
+    <string name="audio_memory_holds">Audio memory is limited at</string>
+    <string name="audio_memory_change">You can change it by tweaking:</string>
+    <string name="option_a_used_ram">A) System memory in use</string>
+    <string name="option_b_audio_quality">B) Sound quality</string>
+    <string name="used_ram_description">Echo and other apps use system memory to keep their data. Large system memory consumption may slow other apps.</string>
+    <string name="audio_quality_description">Quality of 8kHz is enough to recognize human speech. Higher options offer different tradeoffs between quality and memory consumption.</string>
+    <string name="settings_return">Return</string>
+
+    <!-- Others -->
+
+    <string name="sample_time">22 minutes and 30 seconds.</string> <!-- must end sentence -->
+
+
+    <!--
+    <string name="compress_help"><b>WAV</b> - oznacza brak jakiejkolwiek kompresji - jest to format najlepiej oszczędzający baterię i cechujący się najlepszą jakością. Jego wadą jest duże zużycie pamięci.\n
+<b>3GP</b> - oferuje najmocniejszą kompresję ale jest bardzo energożerny i może usunąć z nagrania drobne detale\n
+<b>MP4</b> - oferuje wysoką jakość i dobrą kompresję ale podobnie jak 3GP, szybko zużywa energię.</string>
+    -->
+
+</resources>
