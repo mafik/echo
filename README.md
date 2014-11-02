@@ -2,8 +2,13 @@ Echo
 ====
 
 Time travelling recorder for Android.
+It is free/libre and gratis software.
 
-Check it out on Play Store: https://play.google.com/store/apps/details?id=eu.mrogalski.saidit
+Download
+---
+
+* [Google Play Store](https://play.google.com/store/apps/details?id=eu.mrogalski.saidit)
+* [F-Droid](https://f-droid.org/repository/browse/?fdid=eu.mrogalski.saidit)
 
 Building
 ---
