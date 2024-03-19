@@ -1,23 +1,28 @@
 package eu.mrogalski.saidit;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,6 +36,8 @@ import static eu.mrogalski.saidit.SaidIt.*;
 
 public class SaidItService extends Service {
     static final String TAG = SaidItService.class.getSimpleName();
+    private static final int FOREGROUND_NOTIFICATION_ID = 458;
+    private static final String YOUR_NOTIFICATION_CHANNEL_ID = "SaidItServiceChannel";
 
     volatile int SAMPLE_RATE;
     volatile int FILL_RATE;
@@ -67,8 +74,9 @@ public class SaidItService extends Service {
 
     @Override
     public void onDestroy() {
-        stopRecording(null);
+        stopRecording(null, "");
         innerStopListening();
+        stopForeground(true);
     }
 
     @Override
@@ -124,11 +132,16 @@ public class SaidItService extends Service {
 
         final long memorySize = getSharedPreferences(PACKAGE_NAME, MODE_PRIVATE).getLong(AUDIO_MEMORY_SIZE_KEY, Runtime.getRuntime().maxMemory() / 4);
 
-        Notification note = new Notification( 0, null, System.currentTimeMillis() );
+        /*Notification note = new Notification( 0, null, System.currentTimeMillis() );
         note.flags |= Notification.FLAG_NO_CLEAR;
-        startForeground(42, note);
-        startService(new Intent(this, FakeService.class));
+        startForeground(42, note);*/
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, FakeService.class));
+        }else{
+            startService(new Intent(this, FakeService.class));
+        }*/
         audioHandler.post(new Runnable() {
+            @SuppressLint("MissingPermission")
             @Override
             public void run() {
                 Log.d(TAG, "Executing: START LISTENING");
@@ -188,7 +201,7 @@ public class SaidItService extends Service {
 
     }
 
-    public void dumpRecording(final float memorySeconds, final WavFileReceiver wavFileReceiver) {
+    public void dumpRecording(final float memorySeconds, final WavFileReceiver wavFileReceiver, String newFileName) {
         if(state != STATE_LISTENING) throw new IllegalStateException("Not listening!");
 
         audioHandler.post(new Runnable() {
@@ -204,22 +217,44 @@ public class SaidItService extends Service {
                 final int flags = DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
                 final String dateTime = DateUtils.formatDateTime(SaidItService.this, millis, flags);
                 String filename = "Echo - " + dateTime + ".wav";
+                if(!newFileName.equals("")){
+                    filename = newFileName + ".wav";
+                }
 
-                final String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                String path = storagePath + "/" + filename;
+                File storageDir;
+                if(isExternalStorageWritable()){
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                        // For Android 10 (API level 29) and above, use MediaStore for public storage
+                        //file = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC), filename);
+                        storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Echo");
+                    } else {
+                        // For older versions, use the traditional external storage directory
+                        storageDir = new File(Environment.getExternalStorageDirectory(), "Echo");
+                    }
+                }else{
+                    storageDir = new File(getFilesDir(), "Echo");
+                }
 
-                File file = new File(path);
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    filename = filename.replace(':', '.');
-                    path = storagePath + "/" + filename;
-                    file = new File(path);
+                if(!storageDir.exists()){
+                    storageDir.mkdir();
+                }
+                File file = new File(storageDir, filename);
+
+                // Create the file if it doesn't exist
+                if (!file.exists()) {
+                    try {
+                        if (!file.createNewFile()) {
+                            // Handle file creation failure
+                            throw new IOException("Failed to create file");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // Handle IOException
+                        showToast(getString(R.string.cant_create_file) + file.getAbsolutePath());
+                    }
                 }
                 final WavAudioFormat format = new WavAudioFormat.Builder().sampleRate(SAMPLE_RATE).build();
-                try {
-                    final WavFileWriter writer = new WavFileWriter(format, file);
-
+                try (WavFileWriter writer = new WavFileWriter(format, file)) {
                     try {
                         audioMemory.read(skipBytes, new AudioMemory.Consumer() {
                             @Override
@@ -229,35 +264,28 @@ public class SaidItService extends Service {
                             }
                         });
                     } catch (IOException e) {
-                        final String errorMessage = getString(R.string.error_during_writing_history_into) + path;
-                        Toast.makeText(SaidItService.this, errorMessage, Toast.LENGTH_LONG).show();
-                        Log.e(TAG, errorMessage, e);
-
-                        try {
-                            writer.close();
-                        } catch (IOException e2) {
-                            Log.e(TAG, "CLOSING ERROR", e2);
-                        }
-                        if(wavFileReceiver != null)
-                            wavFileReceiver.fileReady(file, writer.getTotalSampleBytesWritten() * getBytesToSeconds());
+                        // Handle error during file writing
+                        showToast(getString(R.string.error_during_writing_history_into) + file.getAbsolutePath());
+                        Log.e(TAG, "Error during writing history into " + file.getAbsolutePath(), e);
                     }
-
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        Log.e(TAG, "CLOSING ERROR", e);
-                    }
-                    if(wavFileReceiver != null) {
+                    if (wavFileReceiver != null) {
                         wavFileReceiver.fileReady(file, writer.getTotalSampleBytesWritten() * getBytesToSeconds());
                     }
                 } catch (IOException e) {
-                    final String errorMessage = getString(R.string.cant_create_file) + path;
-                    Toast.makeText(SaidItService.this, errorMessage, Toast.LENGTH_LONG).show();
-                    Log.e(TAG, errorMessage, e);
+                    // Handle error during file creation or closing writer
+                    showToast(getString(R.string.cant_create_file) + file.getAbsolutePath());
+                    Log.e(TAG, "Can't create file " + file.getAbsolutePath(), e);
                 }
             }
         });
 
+    }
+    private static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+    private void showToast(String message) {
+        Toast.makeText(SaidItService.this, message, Toast.LENGTH_LONG).show();
     }
 
     public void startRecording(final float prependedMemorySeconds) {
@@ -286,7 +314,21 @@ public class SaidItService extends Service {
                 final String dateTime = DateUtils.formatDateTime(SaidItService.this, millis, flags);
                 String filename = "Echo - " + dateTime + ".wav";
 
-                final String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                File storageDir;
+                if(isExternalStorageWritable()){
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                        // For Android 10 (API level 29) and above, use MediaStore for public storage
+                        //file = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC), filename);
+                        storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Echo");
+                    } else {
+                        // For older versions, use the traditional external storage directory
+                        storageDir = new File(Environment.getExternalStorageDirectory(), "Echo");
+                    }
+                }else{
+                    storageDir = new File(getFilesDir(), "Echo");
+                }
+                final String storagePath = storageDir.getAbsolutePath();
+
                 String path = storagePath + "/" + filename;
 
                 wavFile = new File(path);
@@ -322,14 +364,14 @@ public class SaidItService extends Service {
                         final String errorMessage = getString(R.string.error_during_writing_history_into) + finalPath;
                         Toast.makeText(SaidItService.this, errorMessage, Toast.LENGTH_LONG).show();
                         Log.e(TAG, errorMessage, e);
-                        stopRecording(new SaidItFragment.NotifyFileReceiver(SaidItService.this));
+                        stopRecording(new SaidItFragment.NotifyFileReceiver(SaidItService.this), "");
                     }
                 }
             }
         });
 
-        final Notification notification = buildNotification();
-        startForeground(42, notification);
+        /*final Notification notification = buildNotification();
+        startForeground(42, notification);*/
 
     }
 
@@ -377,7 +419,7 @@ public class SaidItService extends Service {
         public void fileReady(File file, float runtime);
     }
 
-    public void stopRecording(final WavFileReceiver wavFileReceiver) {
+    public void stopRecording(final WavFileReceiver wavFileReceiver, String newFileName) {
         switch(state) {
             case STATE_READY:
             case STATE_LISTENING:
@@ -445,7 +487,7 @@ public class SaidItService extends Service {
                 final String errorMessage = getString(R.string.error_during_recording_into) + wavFile.getName();
                 Toast.makeText(SaidItService.this, errorMessage, Toast.LENGTH_LONG).show();
                 Log.e(TAG, errorMessage, e);
-                stopRecording(new SaidItFragment.NotifyFileReceiver(SaidItService.this));
+                stopRecording(new SaidItFragment.NotifyFileReceiver(SaidItService.this), "");
             }
         }
     };
@@ -502,7 +544,12 @@ public class SaidItService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
+        }else{
+            startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
+        }
+        return START_STICKY;
     }
 
     // Workaround for bug where recent app removal caused service to stop
@@ -511,7 +558,7 @@ public class SaidItService extends Service {
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
 
-        PendingIntent restartServicePendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT| PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmService = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmService.set(
                 AlarmManager.ELAPSED_REALTIME,
@@ -520,17 +567,28 @@ public class SaidItService extends Service {
     }
 
     private Notification buildNotification() {
-
         Intent intent = new Intent(this, SaidItActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setContentTitle(getString(R.string.recording));
-        notificationBuilder.setUsesChronometer(true);
-        notificationBuilder.setProgress(100, 50, true);
-        notificationBuilder.setSmallIcon(R.drawable.ic_stat_notify_recording);
-        notificationBuilder.setTicker(getString(R.string.recording));
-        notificationBuilder.setContentIntent(pendingIntent);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, YOUR_NOTIFICATION_CHANNEL_ID)
+                .setContentTitle(getString(R.string.recording))
+                .setSmallIcon(R.drawable.ic_stat_notify_recording)
+                .setTicker(getString(R.string.recording))
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setOngoing(true); // Ensure notification is ongoing
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the notification channel
+            NotificationChannel channel = new NotificationChannel(
+                    YOUR_NOTIFICATION_CHANNEL_ID,
+                    "Recording Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
         return notificationBuilder.build();
     }
 

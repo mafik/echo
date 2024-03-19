@@ -45,6 +45,9 @@
 
     <string name="record_one_minute">1:00</string>
     <string name="record_five_minutes">5:00</string>
+    <string name="record_30_minutes">30:00</string>
+    <string name="record_2_hrs">2 Hrs</string>
+    <string name="record_6_hrs">6 Hrs</string>
     <string name="record_all_memory">0:00</string>
     <string name="default_price">$ 3.90</string>
 
@@ -98,6 +101,8 @@
     <string name="press_back_to_cancel">Press "back" to cancel</string>
     <string name="send">Send</string>
     <string name="open">Open</string>
+    <string name="allow">Allow</string>
+    <string name="exit">Exit</string>
     <string name="retry">Retry</string>
 
     <!-- Settings  -->
@@ -112,9 +117,11 @@
 
     <!-- Others -->
 
-    <string name="sample_time">22 minutes and 30 seconds.</string> <!-- must end sentence -->
-
-
+    <string name="sample_time">22 minutes and 30 seconds.</string>
+    <string name="recording_name">Enter the name of the recording</string> <!-- must end sentence -->
+    <string name="save_recording">Save Recording</string> <!-- must end sentence -->
+    <string name="permission_required">Permission required</string>
+    <string name="permission_required_message">Echo app requires permission to record and save audio. Please enable it in the settings.</string>
     <!--
     <string name="compress_help"><b>WAV</b> - oznacza brak jakiejkolwiek kompresji - jest to format najlepiej oszczędzający baterię i cechujący się najlepszą jakością. Jego wadą jest duże zużycie pamięci.\n
 <b>3GP</b> - oferuje najmocniejszą kompresję ale jest bardzo energożerny i może usunąć z nagrania drobne detale\n

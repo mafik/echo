@@ -17,7 +17,7 @@ public class BackgroundRecorderActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new SaidItFragment())
+                    .replace(R.id.container, new SaidItFragment())
                     .commit();
         }
 

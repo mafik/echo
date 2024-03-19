@@ -1,15 +1,17 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="SaidIt" parent="Theme.AppCompat">
+    <style name="SaidIt" parent="Theme.AppCompat.Light">
         <item name="android:windowNoTitle">true</item>
+<!--
         <item name="android:buttonStyle">@style/Button</item>
+-->
         <item name="android:textViewStyle">@style/TextView</item>
         <item name="android:windowBackground">@color/gray_e</item>
         <item name="android:windowActionBar">false</item>
 
-        <item name="android:alertDialogTheme">@style/SaidIt.AlertDialogTheme</item>
-        <item name="android:dialogTheme">@style/SaidIt.AlertDialogTheme</item>
+       <!-- <item name="android:alertDialogTheme">@style/SaidIt.AlertDialogTheme</item>
+        <item name="android:dialogTheme">@style/SaidIt.AlertDialogTheme</item>-->
     </style>
 
     <style name="SaidIt.AlertDialogTheme">

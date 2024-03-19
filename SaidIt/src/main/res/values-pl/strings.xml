@@ -50,6 +50,9 @@
     <string name="record_one_minute">1:00</string>
     <string name="record_five_minutes">5:00</string>
     <string name="record_all_memory">0:00</string>
+    <string name="record_30_minutes">30:00</string>
+    <string name="record_2_hrs">2 godz</string>
+    <string name="record_6_hrs">6 godz</string>
     <string name="default_price">9.90 zł</string>
 
     <string name="record_description">Aby po zapisaniu pamięci dowolnym z powyższych przycisków, kontynuować nagrywanie, przytrzymaj go dłużej.</string>
@@ -103,7 +106,8 @@
     <string name="send">Wyślij</string>
     <string name="open">Otwórz</string>
     <string name="retry">Spróbuj ponownie</string>
-
+    <string name="allow">Umożliwić</string>
+    <string name="exit">Wyjście</string>
     <!-- Settings  -->
 
     <string name="audio_memory_holds">Pojemność pamięci dźwięku to</string>
@@ -117,5 +121,8 @@
     <!-- Others -->
 
     <string name="sample_time">22 minuty i 30 sekund.</string> <!-- must end sentence -->
-
+    <string name="recording_name">Wprowadź nazwę nagrania</string> <!-- must end sentence -->
+    <string name="save_recording">Zapisz nagranie</string> <!-- must end sentence -->
+    <string name="permission_required">Wymagane pozwolenie</string>
+    <string name="permission_required_message">Echo aplikacja wymaga pozwolenia na nagrywanie i zapisywanie dźwięku. Proszę włączyć to w ustawieniach.</string>
 </resources>

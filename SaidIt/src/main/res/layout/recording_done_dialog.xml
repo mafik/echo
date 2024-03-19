@@ -17,22 +17,22 @@
         android:textColor="@color/gray_f" />
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:id="@+id/payment_method_dialog_content"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/dialog_content"
-            android:layout_gravity="center_horizontal">
-
+            android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="@dimen/small_round"
-                android:tag="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_round"
+                android:tag="bold"
                 android:text="@string/recording_done_filename" />
 
             <TextView
@@ -42,21 +42,21 @@
                 android:text="" />
 
             <LinearLayout
-                android:layout_marginTop="@dimen/small_round"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_round"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:tag="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:tag="bold"
                         android:text="@string/recording_done_directory" />
 
                     <TextView
@@ -69,22 +69,22 @@
 
                 <ImageButton
                     android:id="@+id/recording_done_open_dir"
-                    android:background="@drawable/white_button"
-                    android:src="@drawable/ic_action_collection"
-                    android:textSize="@dimen/info_text_size"
-                    android:shadowColor="@color/transparent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="0"
-                    android:layout_gravity="center" />
+                    android:background="@drawable/white_button"
+                    android:shadowColor="@color/transparent"
+                    android:src="@drawable/ic_action_collection"
+                    android:textSize="@dimen/info_text_size" />
 
             </LinearLayout>
 
             <TextView
-                android:layout_marginTop="@dimen/small_round"
-                android:tag="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_round"
+                android:tag="bold"
                 android:text="@string/recording_done_runtime" />
 
             <TextView
@@ -94,10 +94,10 @@
                 android:text="" />
 
             <TextView
-                android:layout_marginTop="@dimen/small_round"
-                android:tag="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_round"
+                android:tag="bold"
                 android:text="@string/recording_done_size" />
 
             <TextView
@@ -107,35 +107,35 @@
                 android:text="" />
 
             <LinearLayout
-                android:layout_marginTop="@dimen/small_round"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_round"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/recording_done_send"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/small_round"
+                    android:layout_weight="1"
                     android:background="@drawable/white_button"
                     android:drawableStart="@drawable/ic_action_send_now"
-                    android:text="@string/send"
-                    android:textSize="@dimen/info_text_size"
                     android:shadowColor="@color/transparent"
+                    android:text="@string/send"
                     android:textColor="@color/gray_8"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:textSize="@dimen/info_text_size" />
 
                 <Button
                     android:id="@+id/recording_done_play"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/white_button"
                     android:drawableStart="@drawable/ic_action_play"
-                    android:text="@string/open"
-                    android:textSize="@dimen/info_text_size"
                     android:shadowColor="@color/transparent"
+                    android:text="@string/open"
                     android:textColor="@color/gray_8"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:textSize="@dimen/info_text_size" />
 
             </LinearLayout>
         </LinearLayout>

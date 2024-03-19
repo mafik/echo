@@ -76,7 +76,8 @@
                     android:text="@string/record_one_minute"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    style="@style/Button"/>
                 <Button
                     android:id="@+id/record_last_5_minutes"
                     android:text="@string/record_five_minutes"
@@ -84,13 +85,49 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    style="@style/Button"/>
                 <Button
                     android:id="@+id/record_last_max"
                     android:text="@string/record_all_memory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    style="@style/Button" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/record_last_30_minutes"
+                    android:text="@string/record_30_minutes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Button"/>
+                <Button
+                    android:id="@+id/record_last_2_hrs"
+                    android:text="@string/record_2_hrs"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    style="@style/Button"/>
+                <Button
+                    android:id="@+id/record_last_6_hrs"
+                    android:text="@string/record_6_hrs"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Button" />
             </LinearLayout>
 
             <TextView
@@ -143,6 +180,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                style="@style/Button"
                 android:text="@string/upper_memory_limit_settings_end" />
 
         </LinearLayout>
@@ -151,6 +189,7 @@
             android:id="@+id/rec_section"
             android:orientation="vertical"
             android:visibility="gone"
+            tools:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
