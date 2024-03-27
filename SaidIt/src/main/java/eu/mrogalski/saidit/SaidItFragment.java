@@ -1,14 +1,19 @@
 package eu.mrogalski.saidit;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -17,8 +22,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +29,18 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.view.ViewCompat;
 
 import java.io.File;
 
@@ -39,7 +50,7 @@ import eu.mrogalski.android.Views;
 public class SaidItFragment extends Fragment {
 
     private static final String TAG = SaidItFragment.class.getSimpleName();
-
+    private static final String YOUR_NOTIFICATION_CHANNEL_ID = "SaidItServiceChannel";
     private Button record_pause_button;
     private Button listenButton;
 
@@ -53,7 +64,9 @@ public class SaidItFragment extends Fragment {
     private Button recordLastFiveMinutesButton;
     private Button recordMaxButton;
     private Button recordLastMinuteButton;
-
+    private Button recordLastThirtyMinuteButton;
+    private Button recordLastTwoHrsButton;
+    private Button recordLastSixHrsButton;
     private TextView history_limit;
     private TextView history_size;
     private TextView history_size_title;
@@ -68,14 +81,16 @@ public class SaidItFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        final Activity activity = getActivity(); assert activity != null;
+        final Activity activity = getActivity();
+        assert activity != null;
         activity.bindService(new Intent(activity, SaidItService.class), echoConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        final Activity activity = getActivity(); assert activity != null;
+        final Activity activity = getActivity();
+        assert activity != null;
         activity.unbindService(echoConnection);
     }
 
@@ -95,8 +110,8 @@ public class SaidItFragment extends Fragment {
         @Override
         public void run() {
             final View view = getView();
-            if(view == null) return;
-            if(echo == null) return;
+            if (view == null) return;
+            if (echo == null) return;
             echo.getState(serviceStateCallback);
         }
     };
@@ -129,15 +144,15 @@ public class SaidItFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_background_recorder, container, false);
 
-        if(rootView == null) return null;
+        if (rootView == null) return null;
 
         final Activity activity = getActivity();
         final AssetManager assets = activity.getAssets();
-        final Typeface robotoCondensedBold = Typeface.createFromAsset(assets,"RobotoCondensedBold.ttf");
+        final Typeface robotoCondensedBold = Typeface.createFromAsset(assets, "RobotoCondensedBold.ttf");
         final Typeface robotoCondensedRegular = Typeface.createFromAsset(assets, "RobotoCondensed-Regular.ttf");
         final float density = activity.getResources().getDisplayMetrics().density;
 
@@ -170,11 +185,11 @@ public class SaidItFragment extends Fragment {
         history_size.setTypeface(robotoCondensedBold);
 
         listenButton = (Button) rootView.findViewById(R.id.listen_button);
-        if(listenButton != null) {
+        if (listenButton != null) {
             listenButton.setOnClickListener(listenButtonClickListener);
         }
 
-        if(Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= 19) {
             final int statusBarHeight = getStatusBarHeight();
             listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
             final ViewGroup.LayoutParams layoutParams = listenButton.getLayoutParams();
@@ -194,6 +209,18 @@ public class SaidItFragment extends Fragment {
         recordLastFiveMinutesButton.setOnClickListener(recordButtonClickListener);
         recordLastFiveMinutesButton.setOnLongClickListener(recordButtonClickListener);
 
+        recordLastThirtyMinuteButton = (Button) rootView.findViewById(R.id.record_last_30_minutes);
+        recordLastThirtyMinuteButton.setOnClickListener(recordButtonClickListener);
+        recordLastThirtyMinuteButton.setOnLongClickListener(recordButtonClickListener);
+
+        recordLastTwoHrsButton = (Button) rootView.findViewById(R.id.record_last_2_hrs);
+        recordLastTwoHrsButton.setOnClickListener(recordButtonClickListener);
+        recordLastTwoHrsButton.setOnLongClickListener(recordButtonClickListener);
+
+        recordLastSixHrsButton = (Button) rootView.findViewById(R.id.record_last_6_hrs);
+        recordLastSixHrsButton.setOnClickListener(recordButtonClickListener);
+        recordLastSixHrsButton.setOnLongClickListener(recordButtonClickListener);
+
         recordMaxButton = (Button) rootView.findViewById(R.id.record_last_max);
         recordMaxButton.setOnClickListener(recordButtonClickListener);
         recordMaxButton.setOnLongClickListener(recordButtonClickListener);
@@ -212,7 +239,11 @@ public class SaidItFragment extends Fragment {
         rate_on_google_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.getPackageName())));
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.getPackageName())));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + activity.getPackageName())));
+                }
             }
         });
 
@@ -224,7 +255,12 @@ public class SaidItFragment extends Fragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.getPackageName())));
+                        //rate app
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + activity.getPackageName())));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + activity.getPackageName())));
+                        }
                     }
                 }, 1000);
                 handler.postDelayed(new Runnable() {
@@ -246,9 +282,7 @@ public class SaidItFragment extends Fragment {
                 startActivity(new Intent(activity, SettingsActivity.class));
             }
         });
-
         serviceStateCallback.state(isListening, isRecording, 0, 0, 0);
-
         return rootView;
     }
 
@@ -256,10 +290,10 @@ public class SaidItFragment extends Fragment {
         @Override
         public void state(final boolean listeningEnabled, final boolean recording, final float memorized, final float totalMemory, final float recorded) {
             final Activity activity = getActivity();
-            if(activity == null) return;
+            if (activity == null) return;
             final Resources resources = activity.getResources();
-            if((isRecording != recording) || (isListening  != listeningEnabled)) {
-                if(recording != isRecording) {
+            if ((isRecording != recording) || (isListening != listeningEnabled)) {
+                if (recording != isRecording) {
                     isRecording = recording;
                     if (recording) {
                         rec_section.setVisibility(View.VISIBLE);
@@ -268,7 +302,7 @@ public class SaidItFragment extends Fragment {
                     }
                 }
 
-                if(listeningEnabled != isListening) {
+                if (listeningEnabled != isListening) {
                     isListening = listeningEnabled;
                     if (listeningEnabled) {
                         listenButton.setText(R.string.listening_enabled_disable);
@@ -280,7 +314,7 @@ public class SaidItFragment extends Fragment {
                         listenButton.setShadowLayer(0.01f, 0, resources.getDimensionPixelOffset(R.dimen.shadow_offset), 0xff666666);
                     }
 
-                    if(Build.VERSION.SDK_INT >= 19) {
+                    if (Build.VERSION.SDK_INT >= 19) {
                         final int statusBarHeight = getStatusBarHeight();
                         listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
                     }
@@ -296,13 +330,13 @@ public class SaidItFragment extends Fragment {
 
             TimeFormat.naturalLanguage(resources, totalMemory, timeFormatResult);
 
-            if(!history_limit.getText().equals(timeFormatResult.text)) {
+            if (!history_limit.getText().equals(timeFormatResult.text)) {
                 history_limit.setText(timeFormatResult.text);
             }
 
             TimeFormat.naturalLanguage(resources, memorized, timeFormatResult);
 
-            if(!history_size.getText().equals(timeFormatResult.text)) {
+            if (!history_size.getText().equals(timeFormatResult.text)) {
                 history_size_title.setText(resources.getQuantityText(R.plurals.history_size_title, timeFormatResult.count));
                 history_size.setText(timeFormatResult.text);
                 recordMaxButton.setText(TimeFormat.shortTimer(memorized));
@@ -310,7 +344,7 @@ public class SaidItFragment extends Fragment {
 
             TimeFormat.naturalLanguage(resources, recorded, timeFormatResult);
 
-            if(!rec_time.getText().equals(timeFormatResult.text)) {
+            if (!rec_time.getText().equals(timeFormatResult.text)) {
                 rec_indicator.setText(resources.getQuantityText(R.plurals.recorded, timeFormatResult.count));
                 rec_time.setText(timeFormatResult.text);
             }
@@ -322,10 +356,9 @@ public class SaidItFragment extends Fragment {
     final TimeFormat.Result timeFormatResult = new TimeFormat.Result();
 
 
-
-
     private class ListenButtonClickListener implements View.OnClickListener {
 
+        @SuppressLint("ValidFragment")
         final WorkingDialog dialog = new WorkingDialog() {
             @Override
             public void onStart() {
@@ -385,13 +418,33 @@ public class SaidItFragment extends Fragment {
                         @Override
                         public void run() {
                             if (recording) {
-                                echo.stopRecording(new PromptFileReceiver(getActivity()));
+                                echo.stopRecording(new PromptFileReceiver(getActivity()),"");
                             } else {
+                                ProgressDialog pd = new ProgressDialog(getActivity());
+                                pd.setMessage("Recording...");
+                                pd.show();
                                 final float seconds = getPrependedSeconds(button);
                                 if (keepRecording) {
                                     echo.startRecording(seconds);
                                 } else {
-                                    echo.dumpRecording(seconds, new PromptFileReceiver(getActivity()));
+                                    //create alert dialog with exittext to name the file
+                                    View dialogView = View.inflate(getActivity(), R.layout.dialog_save_recording, null);
+                                    EditText fileName = dialogView.findViewById(R.id.recording_name);
+                                    new AlertDialog.Builder(getActivity())
+                                        .setView(dialogView)
+                                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if(fileName.getText().toString().length() > 0){
+                                                    echo.dumpRecording(seconds, new PromptFileReceiver(getActivity()),fileName.getText().toString());
+                                                } else {
+                                                    Toast.makeText(getActivity(), "Please enter a file name", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton("Cancel", null)
+                                        .show();
+                                    pd.dismiss();
                                 }
                             }
                         }
@@ -402,27 +455,40 @@ public class SaidItFragment extends Fragment {
 
         float getPrependedSeconds(View button) {
             switch (button.getId()) {
-                case R.id.record_last_minute: return 60;
-                case R.id.record_last_5_minutes: return 60 * 5;
-                case R.id.record_last_max: return 60 * 60 * 24 * 365;
+                case R.id.record_last_minute:
+                    return 60;
+                case R.id.record_last_5_minutes:
+                    return 60 * 5;
+                case R.id.record_last_30_minutes:
+                    return 60 * 30;
+                case R.id.record_last_2_hrs:
+                    return 60 * 60 * 2;
+                case R.id.record_last_6_hrs:
+                    return 60 * 60 * 6;
+                case R.id.record_last_max:
+                    return 60 * 60 * 24 * 365;
             }
             return 0;
         }
     }
 
-
     static Notification buildNotificationForFile(Context context, File outFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(outFile), "audio/wav");
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", outFile);
+        intent.setDataAndType(fileUri, "audio/wav");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read permission to the receiving app
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
-        notificationBuilder.setContentTitle(context.getString(R.string.recording_saved));
-        notificationBuilder.setContentText(outFile.getName());
-        notificationBuilder.setSmallIcon(R.drawable.ic_stat_notify_recorded);
-        notificationBuilder.setTicker(outFile.getName());
-        notificationBuilder.setContentIntent(pendingIntent);
-        notificationBuilder.setAutoCancel(true);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, YOUR_NOTIFICATION_CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.recording_saved))
+                .setContentText(outFile.getName())
+                .setSmallIcon(R.drawable.ic_stat_notify_recorded)
+                .setTicker(outFile.getName())
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+        notificationBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notificationBuilder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
         return notificationBuilder.build();
     }
 
@@ -436,7 +502,17 @@ public class SaidItFragment extends Fragment {
 
         @Override
         public void fileReady(final File file, float runtime) {
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             notificationManager.notify(43, buildNotificationForFile(context, file));
         }
     }

@@ -70,9 +70,14 @@ public class SettingsActivity extends Activity {
 
     private void syncUI() {
         final long maxMemory = Runtime.getRuntime().maxMemory();
+        System.out.println("maxMemory = " + maxMemory);
+        System.out.println("totalMemory = " + Runtime.getRuntime().totalMemory());
+
         ((Button) findViewById(R.id.memory_low)).setText(StringFormat.shortFileSize(maxMemory / 4));
         ((Button) findViewById(R.id.memory_medium)).setText(StringFormat.shortFileSize(maxMemory / 2));
-        ((Button) findViewById(R.id.memory_high)).setText(StringFormat.shortFileSize(maxMemory * 3 / 4));
+//        ((Button) findViewById(R.id.memory_high)).setText(StringFormat.shortFileSize(maxMemory * 3 / 4));
+        ((Button) findViewById(R.id.memory_high)).setText(StringFormat.shortFileSize((long) (maxMemory * 0.90)));
+
 
         TimeFormat.naturalLanguage(getResources(), service.getBytesToSeconds() * service.getMemorySize(), timeFormatResult);
         ((TextView)findViewById(R.id.history_limit)).setText(timeFormatResult.text);
