@@ -1,0 +1,17 @@
+Continuously record audio for retrieval at a later time.
+
+Unless saved, recordings are deleted on a rolling basis.
+
+<ul>
+<li>record harassment and bullying (even when you didn't anticipated them)</li>
+<li>save important pieces of information (phone numbers / passwords / instructions)</li>
+<li>record cute/funny moments</li>
+<li>prove that someone said (or didn't say) something</li>
+</ul>
+
+<b>Limitations</b>
+
+The app employs a range of tricks to reduce battery usage but it's still draining quite a bit.
+You'll have to check your device to see how it affects your battery.
+
+Battery drain is comparable to having constant audio playback.

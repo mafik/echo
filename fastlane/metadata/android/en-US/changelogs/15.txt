@@ -1,0 +1,6 @@
+<ul>
+<li>Bumped the minimum Android SDK level to 30 (Android 11)</li>
+<li>Fixed a crash when disabling & re-enabling listening on recent devices</li>
+<li>Fixed the lag issue that prevented the app from showing current recording time after opening the app</li>
+<li>Removed obsolete links & references to Google Play</li>
+</ul>
