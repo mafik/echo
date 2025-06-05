@@ -435,7 +435,7 @@ public class SaidItService extends Service {
     final AudioMemory.Consumer filler = new AudioMemory.Consumer() {
         @Override
         public int consume(final byte[] array, final int offset, final int count) throws IOException {
-            Log.d(TAG, "READING " + count + " B");
+//            Log.d(TAG, "READING " + count + " B");
             final int read = audioRecord.read(array, offset, count, AudioRecord.READ_NON_BLOCKING);
             if (read == AudioRecord.ERROR_BAD_VALUE) {
                 Log.e(TAG, "AUDIO RECORD ERROR - BAD VALUE");
