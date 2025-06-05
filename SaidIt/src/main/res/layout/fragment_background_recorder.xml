@@ -1,9 +1,9 @@
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -12,11 +12,11 @@
 
         <Button
             android:id="@+id/listen_button"
-            android:gravity="center"
-            android:text="@string/listening_enabled_disable"
+            style="@style/GreenButton"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            style="@style/GreenButton" />
+            android:gravity="center"
+            android:text="@string/listening_enabled_disable" />
 
         <TextView
             android:layout_marginTop="20dp"
@@ -112,15 +112,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     style="@style/Button"/>
+
                 <Button
                     android:id="@+id/record_last_2_hrs"
-                    android:text="@string/record_2_hrs"
+                    style="@style/Button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    style="@style/Button"/>
+                    android:text="@string/record_2_hrs" />
                 <Button
                     android:id="@+id/record_last_6_hrs"
                     android:text="@string/record_6_hrs"

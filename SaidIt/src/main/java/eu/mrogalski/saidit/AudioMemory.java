@@ -15,7 +15,7 @@ public class AudioMemory {
     private boolean currentWasFilled = false;
     private byte[] current = null;
     private int offset = 0;
-    private static final int CHUNK_SIZE = 1920000; // 20 seconds of 48kHz wav (single channel, 16-bit samples) (1875 kB)
+    static final int CHUNK_SIZE = 1920000; // 20 seconds of 48kHz wav (single channel, 16-bit samples) (1875 kB)
 
     synchronized public void allocate(long sizeToEnsure) {
         long currentSize = getAllocatedMemorySize();
@@ -120,20 +120,20 @@ public class AudioMemory {
         }
     }
 
-    public interface Observer {
-        public void observe(int filled, int total, int estimation, boolean overwriting);
+    public static class Stats {
+        public int filled; // taken
+        public int total;
+        public int estimation;
+        public boolean overwriting; // currentWasFilled;
     }
 
-    public void observe(Observer observer, int fillRate) {
-        final int estimation;
-        final int taken;
-        final int total;
-        synchronized (this) {
-            taken = filled.size() * CHUNK_SIZE + (current == null ? 0 : currentWasFilled ? CHUNK_SIZE : offset);
-            total = (filled.size() + free.size() + (current == null ? 0 : 1)) * CHUNK_SIZE;
-            estimation = (int) (filling ? (SystemClock.uptimeMillis() - fillingStartUptimeMillis) * fillRate / 1000 : 0);
-        }
-        observer.observe(taken, total, estimation, currentWasFilled);
+    public synchronized Stats getStats(int fillRate) {
+        final Stats stats = new Stats();
+        stats.filled = filled.size() * CHUNK_SIZE + (current == null ? 0 : currentWasFilled ? CHUNK_SIZE : offset);
+        stats.total = (filled.size() + free.size() + (current == null ? 0 : 1)) * CHUNK_SIZE;
+        stats.estimation = (int) (filling ? (SystemClock.uptimeMillis() - fillingStartUptimeMillis) * fillRate / 1000 : 0);
+        stats.overwriting = currentWasFilled;
+        return stats;
     }
 
 }

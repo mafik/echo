@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,7 +41,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.view.ViewCompat;
 
 import java.io.File;
 
@@ -80,6 +80,7 @@ public class SaidItFragment extends Fragment {
 
     @Override
     public void onStart() {
+        Log.d(TAG, "onStart");
         super.onStart();
         final Activity activity = getActivity();
         assert activity != null;
@@ -88,10 +89,12 @@ public class SaidItFragment extends Fragment {
 
     @Override
     public void onStop() {
+        Log.d(TAG, "onStop");
         super.onStop();
         final Activity activity = getActivity();
         assert activity != null;
         activity.unbindService(echoConnection);
+        echo = null;
     }
 
     class ActivityResult {
@@ -122,13 +125,19 @@ public class SaidItFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder binder) {
+            Log.d(TAG, "onServiceConnected");
             SaidItService.BackgroundRecorderBinder typedBinder = (SaidItService.BackgroundRecorderBinder) binder;
+            if (echo != null && echo == typedBinder.getService()) {
+                Log.d(TAG, "update loop already running, skipping");
+                return;
+            }
             echo = typedBinder.getService();
-            ViewCompat.postOnAnimation(getView(), updater);
+            getView().postOnAnimation(updater);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
+            Log.d(TAG, "onServiceDisconnected");
             echo = null;
         }
     };
@@ -341,7 +350,7 @@ public class SaidItFragment extends Fragment {
                 rec_time.setText(timeFormatResult.text);
             }
 
-            ViewCompat.postOnAnimation(history_size, updater);
+            history_size.postOnAnimationDelayed(updater, 100);
         }
     };
 

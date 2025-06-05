@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.SystemClock;
 import androidx.core.app.NotificationCompat;
 import android.text.format.DateUtils;
@@ -47,7 +48,6 @@ public class SaidItService extends Service {
     AudioRecord audioRecord; // used only in the audio thread
     WavFileWriter wavFileWriter; // used only in the audio thread
     final AudioMemory audioMemory = new AudioMemory(); // used only in the audio thread
-    volatile private int readLimit = Integer.MAX_VALUE; // used to control responsiveness of audio thread
 
     HandlerThread audioThread;
     Handler audioHandler; // used to post messages to audio thread
@@ -81,18 +81,11 @@ public class SaidItService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        readLimit = FILL_RATE / 10;
         return new BackgroundRecorderBinder();
     }
 
     @Override
-    public void onRebind(Intent intent) {
-        readLimit = FILL_RATE / 10;
-    }
-
-    @Override
     public boolean onUnbind(Intent intent) {
-        readLimit = Integer.MAX_VALUE;
         return true;
     }
 
@@ -144,7 +137,7 @@ public class SaidItService extends Service {
                        SAMPLE_RATE,
                        AudioFormat.CHANNEL_IN_MONO,
                        AudioFormat.ENCODING_PCM_16BIT,
-                       512 * 1024); // .5MB
+                       AudioMemory.CHUNK_SIZE);
 
                 if(audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
                     Log.e(TAG, "Audio: INITIALIZATION ERROR - releasing resources");
@@ -199,6 +192,7 @@ public class SaidItService extends Service {
         audioHandler.post(new Runnable() {
             @Override
             public void run() {
+                flushAudioRecord();
                 int prependBytes = (int)(memorySeconds * FILL_RATE);
                 int bytesAvailable = audioMemory.countFilled();
 
@@ -289,6 +283,7 @@ public class SaidItService extends Service {
         audioHandler.post(new Runnable() {
             @Override
             public void run() {
+                flushAudioRecord();
                 int prependBytes = (int)(prependedMemorySeconds * FILL_RATE);
                 int bytesAvailable = audioMemory.countFilled();
 
@@ -409,6 +404,7 @@ public class SaidItService extends Service {
         audioHandler.post(new Runnable() {
             @Override
             public void run() {
+                flushAudioRecord();
                 try {
                     wavFileWriter.close();
                 } catch (IOException e) {
@@ -429,13 +425,18 @@ public class SaidItService extends Service {
         stopForeground(true);
     }
 
+    private void flushAudioRecord() {
+        // Only allowed on the audio thread
+        assert audioHandler.getLooper() == Looper.myLooper();
+        audioHandler.removeCallbacks(audioReader); // remove any delayed callbacks
+        audioReader.run();
+    }
+
     final AudioMemory.Consumer filler = new AudioMemory.Consumer() {
         @Override
         public int consume(final byte[] array, final int offset, final int count) throws IOException {
-
-            final int bytes = Math.min(readLimit, count);
-            //Log.d(TAG, "READING " + bytes + " B");
-            final int read = audioRecord.read(array, offset, bytes);
+            Log.d(TAG, "READING " + count + " B");
+            final int read = audioRecord.read(array, offset, count, AudioRecord.READ_NON_BLOCKING);
             if (read == AudioRecord.ERROR_BAD_VALUE) {
                 Log.e(TAG, "AUDIO RECORD ERROR - BAD VALUE");
                 return 0;
@@ -451,7 +452,20 @@ public class SaidItService extends Service {
             if (wavFileWriter != null && read > 0) {
                 wavFileWriter.write(array, offset, read);
             }
-            audioHandler.post(audioReader);
+            if (read == count) {
+                // We've filled the buffer, so let's read again.
+                audioHandler.post(audioReader);
+            } else {
+                // It seems we've read everything!
+                //
+                // Estimate how long do we have until audioRecord fills up completely and post the callback 1 second before that
+                // (but not earlier than half the buffer and no later than 90% of the buffer).
+                float bufferSizeInSeconds = audioRecord.getBufferSizeInFrames() / (float)SAMPLE_RATE;
+                float delaySeconds = bufferSizeInSeconds - 1;
+                delaySeconds = Math.max(delaySeconds, bufferSizeInSeconds * 0.5f);
+                delaySeconds = Math.min(delaySeconds, bufferSizeInSeconds * 0.9f);
+                audioHandler.postDelayed(audioReader, (long)(delaySeconds * 1000));
+            }
             return read;
         }
     };
@@ -478,33 +492,29 @@ public class SaidItService extends Service {
         final boolean listeningEnabled = preferences.getBoolean(AUDIO_MEMORY_ENABLED_KEY, true);
         final boolean recording = (state == STATE_RECORDING);
         final Handler sourceHandler = new Handler();
+        // Note that we may not run this for quite a while, if audioReader decides to read a lot of audio!
         audioHandler.post(new Runnable() {
             @Override
             public void run() {
-
-                audioMemory.observe(new AudioMemory.Observer() {
+                flushAudioRecord();
+                final AudioMemory.Stats stats = audioMemory.getStats(FILL_RATE);
+                
+                int recorded = 0;
+                if(wavFileWriter != null) {
+                    recorded += wavFileWriter.getTotalSampleBytesWritten();
+                    recorded += stats.estimation;
+                }
+                final float bytesToSeconds = getBytesToSeconds();
+                final int finalRecorded = recorded;
+                sourceHandler.post(new Runnable() {
                     @Override
-                    public void observe(final int filled, final int total, final int estimation, final boolean overwriting) {
-                        int recorded = 0;
-                        if(wavFileWriter != null) {
-                            recorded += wavFileWriter.getTotalSampleBytesWritten();
-                            recorded += estimation;
-                        }
-                        final float bytesToSeconds = getBytesToSeconds();
-
-                        final int finalRecorded = recorded;
-                        sourceHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                stateCallback.state(listeningEnabled, recording,
-                                        (overwriting ? total : filled + estimation) * bytesToSeconds,
-                                        total * bytesToSeconds,
-                                        finalRecorded * bytesToSeconds);
-                            }
-                        });
+                    public void run() {
+                        stateCallback.state(listeningEnabled, recording,
+                                (stats.overwriting ? stats.total : stats.filled + stats.estimation) * bytesToSeconds,
+                                stats.total * bytesToSeconds,
+                                finalRecorded * bytesToSeconds);
                     }
-                }, FILL_RATE);
+                });
             }
         });
     }
