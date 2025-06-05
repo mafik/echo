@@ -5,7 +5,7 @@ buildscript {
         maven { url "https://repo.maven.apache.org/maven2" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:8.10.1'
     }
 }
 apply plugin: 'com.android.application'
@@ -48,9 +48,7 @@ android {
             //signingConfig signingConfigs.release
         }
     }
-    lintOptions {
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
+    lint {
         abortOnError false
     }
 
