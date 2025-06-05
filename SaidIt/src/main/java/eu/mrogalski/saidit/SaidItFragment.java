@@ -163,11 +163,7 @@ public class SaidItFragment extends Fragment {
                 if (view instanceof Button) {
                     final Button button = (Button) view;
                     button.setTypeface(robotoCondensedBold);
-                    final int shadowColor;
-                    if (Build.VERSION.SDK_INT >= 16)
-                        shadowColor = button.getShadowColor();
-                    else
-                        shadowColor = 0x80000000;
+                    final int shadowColor = button.getShadowColor();
                     button.setShadowLayer(0.01f, 0, density * 2, shadowColor);
                 } else if (view instanceof TextView) {
 
@@ -189,13 +185,11 @@ public class SaidItFragment extends Fragment {
             listenButton.setOnClickListener(listenButtonClickListener);
         }
 
-        if (Build.VERSION.SDK_INT >= 19) {
-            final int statusBarHeight = getStatusBarHeight();
-            listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
-            final ViewGroup.LayoutParams layoutParams = listenButton.getLayoutParams();
-            layoutParams.height += statusBarHeight;
-            listenButton.setLayoutParams(layoutParams);
-        }
+        final int statusBarHeight = getStatusBarHeight();
+        listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
+        final ViewGroup.LayoutParams layoutParams = listenButton.getLayoutParams();
+        layoutParams.height += statusBarHeight;
+        listenButton.setLayoutParams(layoutParams);
 
 
         record_pause_button = (Button) rootView.findViewById(R.id.rec_stop_button);
@@ -314,10 +308,8 @@ public class SaidItFragment extends Fragment {
                         listenButton.setShadowLayer(0.01f, 0, resources.getDimensionPixelOffset(R.dimen.shadow_offset), 0xff666666);
                     }
 
-                    if (Build.VERSION.SDK_INT >= 19) {
-                        final int statusBarHeight = getStatusBarHeight();
-                        listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
-                    }
+                    final int statusBarHeight = getStatusBarHeight();
+                    listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
                     listenButton.setGravity(Gravity.CENTER);
                 }
 

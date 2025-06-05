@@ -215,14 +215,8 @@ public class SaidItService extends Service {
 
                 File storageDir;
                 if(isExternalStorageWritable()){
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                        // For Android 10 (API level 29) and above, use MediaStore for public storage
-                        //file = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC), filename);
-                        storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Echo");
-                    } else {
-                        // For older versions, use the traditional external storage directory
-                        storageDir = new File(Environment.getExternalStorageDirectory(), "Echo");
-                    }
+                    // Use public storage directory for Android 11+ (min SDK 30)
+                    storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Echo");
                 }else{
                     storageDir = new File(getFilesDir(), "Echo");
                 }
@@ -308,14 +302,8 @@ public class SaidItService extends Service {
 
                 File storageDir;
                 if(isExternalStorageWritable()){
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                        // For Android 10 (API level 29) and above, use MediaStore for public storage
-                        //file = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC), filename);
-                        storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Echo");
-                    } else {
-                        // For older versions, use the traditional external storage directory
-                        storageDir = new File(Environment.getExternalStorageDirectory(), "Echo");
-                    }
+                    // Use public storage directory for Android 11+ (min SDK 30)
+                    storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Echo");
                 }else{
                     storageDir = new File(getFilesDir(), "Echo");
                 }
@@ -536,11 +524,7 @@ public class SaidItService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
-        }else{
-            startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
-        }
+        startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
         return START_STICKY;
     }
 
@@ -570,16 +554,14 @@ public class SaidItService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setOngoing(true); // Ensure notification is ongoing
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the notification channel
-            NotificationChannel channel = new NotificationChannel(
-                    YOUR_NOTIFICATION_CHANNEL_ID,
-                    "Recording Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        // Create the notification channel
+        NotificationChannel channel = new NotificationChannel(
+                YOUR_NOTIFICATION_CHANNEL_ID,
+                "Recording Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
 
         return notificationBuilder.build();
     }
