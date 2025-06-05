@@ -350,9 +350,6 @@ public class SaidItService extends Service {
             }
         });
 
-        /*final Notification notification = buildNotification();
-        startForeground(42, notification);*/
-
     }
 
     public long getMemorySize() {
