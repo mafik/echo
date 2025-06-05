@@ -316,10 +316,6 @@ public class SaidItFragment extends Fragment {
                         listenButton.setBackgroundResource(R.drawable.top_gray_button);
                         listenButton.setShadowLayer(0.01f, 0, resources.getDimensionPixelOffset(R.dimen.shadow_offset), 0xff666666);
                     }
-
-                    final int statusBarHeight = getStatusBarHeight();
-                    listenButton.setPadding(listenButton.getPaddingLeft(), listenButton.getPaddingTop() + statusBarHeight, listenButton.getPaddingRight(), listenButton.getPaddingBottom());
-                    listenButton.setGravity(Gravity.CENTER);
                 }
 
                 if (listeningEnabled && !recording) {
@@ -360,24 +356,7 @@ public class SaidItFragment extends Fragment {
     private class ListenButtonClickListener implements View.OnClickListener {
 
         @SuppressLint("ValidFragment")
-        final WorkingDialog dialog = new WorkingDialog() {
-            @Override
-            public void onStart() {
-                super.onStart();
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        echo.enableListening();
-                        echo.getState(new SaidItService.StateCallback() {
-                            @Override
-                            public void state(boolean listeningEnabled, boolean recording, float memorized, float totalMemory, float recorded) {
-                                dismiss();
-                            }
-                        });
-                    }
-                });
-            }
-        };
+        final WorkingDialog dialog = new WorkingDialog();
 
         public ListenButtonClickListener() {
             dialog.setDescriptionStringId(R.string.work_preparing_memory);
@@ -392,6 +371,19 @@ public class SaidItFragment extends Fragment {
                         echo.disableListening();
                     } else {
                         dialog.show(getFragmentManager(), "Preparing memory");
+
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                echo.enableListening();
+                                echo.getState(new SaidItService.StateCallback() {
+                                    @Override
+                                    public void state(boolean listeningEnabled, boolean recording, float memorized, float totalMemory, float recorded) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
                     }
                 }
             });
