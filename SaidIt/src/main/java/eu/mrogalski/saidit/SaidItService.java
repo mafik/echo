@@ -132,14 +132,6 @@ public class SaidItService extends Service {
 
         final long memorySize = getSharedPreferences(PACKAGE_NAME, MODE_PRIVATE).getLong(AUDIO_MEMORY_SIZE_KEY, Runtime.getRuntime().maxMemory() / 4);
 
-        /*Notification note = new Notification( 0, null, System.currentTimeMillis() );
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        startForeground(42, note);*/
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent(this, FakeService.class));
-        }else{
-            startService(new Intent(this, FakeService.class));
-        }*/
         audioHandler.post(new Runnable() {
             @SuppressLint("MissingPermission")
             @Override

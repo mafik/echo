@@ -53,12 +53,6 @@
             android:exported="false">
         </service>
 
-       <!-- <service
-            android:name=".FakeService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>-->
-
         <receiver android:name=".BroadcastReceiver"
             android:exported="false">
             <intent-filter>
