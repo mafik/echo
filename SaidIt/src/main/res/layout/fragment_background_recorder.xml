@@ -270,7 +270,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/google_play_button"
+            android:src="@drawable/github_logo"
             android:paddingTop="10dp"
             android:paddingBottom="10dp" />
 
